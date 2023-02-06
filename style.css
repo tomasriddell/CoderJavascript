@@ -1,0 +1,43 @@
+body{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title{
+    align-self: center;
+    margin-top: 5%;
+    font-size: x-large;
+}
+
+/* Primera pantalla con form de ingreso de datos */
+.titulos{
+    font-size: large;
+}
+
+#formInicial{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.secs{
+    border: solid 2px navy;
+    border-radius: 20px;
+    padding: 3rem 0 3rem 0;
+    margin-top: 3rem;
+}
+
+.botones{
+    background-color: navy;
+    border: none;
+}
+
+.opciones{
+    width: 40%;
+}
+
+
+/* Segunda pantalla con input de datos para créditos*/
+
