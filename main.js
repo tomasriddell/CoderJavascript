@@ -189,6 +189,8 @@ let seccionDos = function (e){
 
     botonSimular.addEventListener("click", seccionTres);
     
+
+    
     // let seccionCuatro = function(e){
     //     e.preventDefault();
     //     seccion.remove();
