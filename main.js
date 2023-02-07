@@ -46,75 +46,77 @@ function simulador(){
     
 }
 
-//Función que compara créditos
-function comparar(){
-    let opcion = prompt("Puedes comparar en base a la tasa, plazo o aporte inicial aceptado por estos bancos. Qué crierio de comparación deseas ocupar? \n"
-    +"1. Mejor tasa \n2. Mayor plazo \n3. Menor aporte inicial")
+// //Función que compara créditos
+// function comparar(){
+//     let opcion = prompt("Puedes comparar en base a la tasa, plazo o aporte inicial aceptado por estos bancos. Qué crierio de comparación deseas ocupar? \n"
+//     +"1. Mejor tasa \n2. Mayor plazo \n3. Menor aporte inicial")
 
-    //Comparación por menor tasa
-    if (opcion == 1){
-        let tasaBancos = bancos.sort((a,b)=>{
-            if (a.tasa > b.tasa){
-                return 1;
-            }
-            if (a.tasa < b.tasa){
-                return -1;
-            }
-            else return 0;
-        })
+//     //Comparación por menor tasa
+//     if (opcion == 1){
+//         let tasaBancos = bancos.sort((a,b)=>{
+//             if (a.tasa > b.tasa){
+//                 return 1;
+//             }
+//             if (a.tasa < b.tasa){
+//                 return -1;
+//             }
+//             else return 0;
+//         })
 
-        let tasaArr = tasaBancos.map(obj => "Banco " + obj.nombre + ": " + obj.tasa + "%").join("\n")
+//         let tasaArr = tasaBancos.map(obj => "Banco " + obj.nombre + ": " + obj.tasa + "%").join("\n")
 
-        alert(tasaArr);
-    }
+//         alert(tasaArr);
+//     }
 
-    //Comparación por mayor plazo
-    else if (opcion ==2){
-        let plazos = bancos.sort((a,b)=>{
-            if (a.anos > b.anos){
-                return -1;
-            }
-            if (a.anos < b.anos){
-                return 1;
-            }
-            else return 0;
-        })
+//     //Comparación por mayor plazo
+//     else if (opcion ==2){
+//         let plazos = bancos.sort((a,b)=>{
+//             if (a.anos > b.anos){
+//                 return -1;
+//             }
+//             if (a.anos < b.anos){
+//                 return 1;
+//             }
+//             else return 0;
+//         })
 
-        let plazoArr = plazos.map(obj => "Banco " + obj.nombre + ": " + obj.anos + " años").join("\n")
+//         let plazoArr = plazos.map(obj => "Banco " + obj.nombre + ": " + obj.anos + " años").join("\n")
 
-        alert(plazoArr);
-    }
+//         alert(plazoArr);
+//     }
 
-    //Comparación por menor aporte inicial
-    else if (opcion ==3){
-        let pie = bancos.sort((a,b)=>{
-            if (a.pie > b.pie){
-                return 1;
-            }
-            if (a.pie < b.pie){
-                return -1;
-            }
-            else return 0;
-        })
+//     //Comparación por menor aporte inicial
+//     else if (opcion ==3){
+//         let pie = bancos.sort((a,b)=>{
+//             if (a.pie > b.pie){
+//                 return 1;
+//             }
+//             if (a.pie < b.pie){
+//                 return -1;
+//             }
+//             else return 0;
+//         })
 
-        let pieOrden = pie.map(obj => "Banco " + obj.nombre + ": " + obj.pie*100 + "% del valor de la propiedad").join("\n")
+//         let pieOrden = pie.map(obj => "Banco " + obj.nombre + ": " + obj.pie*100 + "% del valor de la propiedad").join("\n")
 
-        alert(pieOrden);
-    }
+//         alert(pieOrden);
+//     }
 
-    else{
-        opcion = prompt("No ingresaste una opción válida, elige nuevamente el criterio de comparación")
-    }
-}
+//     else{
+//         opcion = prompt("No ingresaste una opción válida, elige nuevamente el criterio de comparación")
+//     }
+// }
 
 
 // Funcion que crea una funcionalidad dentro de la segunda sección
-function funcionalidad (tit, parr, bot, cont){
+function funcionalidad (tit, parr, bot, ident, cont){
     let d = document.createElement("div");
     d.className = "opciones";
     d.innerHTML = `<h2 class="titulos">${tit}</h2>
     <p>${parr}</p>
-    <button class="btn btn-primary botones">${bot}</button>`
+    <input type="number" name="" id="valor" placeholder="Valor de la propiedad">
+    <input type="number" name="" id="pie" placeholder="Aporte inicial">
+    <button id="${ident}" class="btn btn-primary botones">${bot}</button>`
     cont.appendChild(d);
 }
 
@@ -125,36 +127,82 @@ function nuevaSec (f, cont){
     nuevaSeccion.className =`d-flex flex-${f} justify-content-around secs`;
     cont.appendChild(nuevaSeccion);
 
-    funcionalidad ("Simular", "Ingresa el valor de la propiedad que quieres comprar junto con otros datos y te diremos el valor de la mensualidad que deberás pagar con cada banco", "Simular", nuevaSeccion);
+    // funcionalidad ("Comparar bancos", "Conoce las tasas y condiciones de cada uno de los bancos por separado", "Comparar", "comparar", nuevaSeccion);
 
-    funcionalidad ("Comparar bancos", "Conoce las tasas y condiciones de cada uno de los bancos por separado", "Comparar", nuevaSeccion);
+    return nuevaSeccion;
 }
 
 
 
 //Ir a buscar elementos del DOM
 
+// Contenedor de todo
 let contenedor = document.querySelector("#front");
 
+// inputs de formulario 1
 let nombre = document.querySelector("#nombre");
 let mail = document.querySelector("#email");
-
 nombre.onchange = () => sessionStorage.setItem("nombre", nombre.value);
 mail.onchange = () => sessionStorage.setItem("mail", mail.value);
 
+// formulario inicial
 let form1 = document.querySelector("#formInicial");
 
+// botón submit del formulario
 let sub1 = document.querySelector("#enviarF1");
 
-// SIMULADOR
-
-sub1.addEventListener("click", screen2);
-
-
-function screen2(e){
+// función de evento que crea la segunda pantalla
+let seccionDos = function (e){
     e.preventDefault();
     form1.remove();
+    let seccion = nuevaSec("row", contenedor);
+    funcionalidad ("Simular", "Ingresa el valor de la propiedad que quieres comprar junto con otros datos y te diremos el valor de la mensualidad que deberás pagar con cada banco", "Simular", "simular", seccion);
 
-    nuevaSec("row", contenedor);
+    let val = document.querySelector("#valor");
+    let pi = document.querySelector("#pie");
+    val.onchange = () => sessionStorage.setItem("valor", val.value);
+    pi.onchange = () => sessionStorage.setItem("pie", pi.value);
+
+    let botonSimular = document.getElementById("simular");
+    // let botonComparar = document.getElementById("comparar");
+
+    let seccionTres = function(e){
+        e.preventDefault();
+        seccion.remove();
+
+        let seccion3 = nuevaSec("row", contenedor);
+        
+        let valSim = sessionStorage.getItem("valor");
+        let pieSim = sessionStorage.getItem("pie");
+        let nombre = sessionStorage.getItem("nombre");
+
+        let simulacion = document.createElement("div");
+        simulacion.innerText = nombre + ", el costo mensual de tu crédito hipotecario será de: \n"
+        seccion3.appendChild(simulacion);
+
+        for(const obj of bancos){
+            let simuBanco = document.createElement("p");
+            simuBanco.innerText = `$ ${Math.round(mensualidad(valSim, pieSim, obj.tasa, obj.anos) *100)/100} durante ${obj.anos} años en el banco ${obj.nombre}`;
+            simulacion.appendChild(simuBanco);
+        }
+    }
+
+    botonSimular.addEventListener("click", seccionTres);
+    
+    // let seccionCuatro = function(e){
+    //     e.preventDefault();
+    //     seccion.remove();
+    // }
+    
+    
+    // botonComparar.addEventListener("click", seccionCuatro);
+
 }
+
+
+// SIMULADOR
+sub1.addEventListener("click", seccionDos);
+
+
+
 
