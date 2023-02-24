@@ -27,17 +27,6 @@ fetch("tasas-anos.json")
 let mensualidad = (a,b,c,d) => ((a-b) * (1+c)^(d)) / (d*12);
 
 
-// Funcion que crea una funcionalidad dentro de la segunda sección
-function funcionalidad (tit, parr, bot, ident, cont){
-    let d = document.createElement("div");
-    d.className = "opciones";
-    d.innerHTML =   `<h2 class="titulos">${tit}</h2>
-                    <p id=parrafo_sim>${parr}</p>
-                    <button id="${ident}" class="btn btn-primary botones">${bot}</button>`
-    cont.appendChild(d);
-    return d;
-}
-
 
 // Funcion que crea nueva sección pasando como parámetro la dirección flex y el contenedor padre
 function nuevaSec (f, cont){
@@ -49,15 +38,12 @@ function nuevaSec (f, cont){
 }
 
 
-
-
-
-
-//borrar formulario inicial y crear nueva sección
+//borrar formulario inicial y crear la sección 2
 function Secc2(){
     form1.remove(); 
+    
     let seccion2 = nuevaSec("row", contenedor);
-
+    
     //crear funcionaildad simular
     let sim = funcionalidad("Simular", "Ingresa el valor de la propiedad que quieres comprar junto con otros datos y te diremos el valor de la mensualidad que deberás pagar con cada banco", "Simular", "simular", seccion2);
     let input_simular = document.createElement("div");
@@ -70,7 +56,21 @@ function Secc2(){
     //crear funcionalidad comparar
     let comp = funcionalidad("Comparar", "Compara los datos de distintos bancos según su tasa, plazo y condiciones", "Comparar", "comparar", seccion2);
     
+    return seccion2;
 }
+
+
+// Funcion que crea una funcionalidad dentro de la segunda sección
+function funcionalidad (tit, parr, bot, ident, cont){
+    let d = document.createElement("div");
+    d.className = "opciones";
+    d.innerHTML =   `<h2 class="titulos">${tit}</h2>
+                    <p id=parrafo_sim>${parr}</p>
+                    <button id="${ident}" class="btn btn-primary botones">${bot}</button>`
+    cont.appendChild(d);
+    return d;
+}
+
 
 
 //promesa que valida que el correo y mail ingresados por el usuario son correctos
@@ -86,6 +86,22 @@ const nombre_mail = function(nom, eml){
 };
 
 
+//Función que gatilla los botones de comparar
+let Comparaciones = async (seccionBorrar, seccionApp) =>{
+    b1.addEventListener("click", async ()=>{
+        compararTasa(seccionBorrar, seccionApp);
+    })
+
+    b2.addEventListener("click", async ()=>{
+        compararPlazo(seccionBorrar, seccionApp);
+    })
+
+    b3.addEventListener("click", async ()=>{
+        compararPie(seccionBorrar, seccionApp);
+    })
+}
+
+
 //Ir a buscar elementos del DOM
 // Contenedor de todo
 let contenedor = document.querySelector("#front");
@@ -94,8 +110,6 @@ let contenedor = document.querySelector("#front");
 // inputs de formulario 1
 let nombre = document.querySelector("#nombre");
 let mail = document.querySelector("#email");
-// nombre.onchange = () => sessionStorage.setItem("nombre", nombre.value);
-// mail.onchange = () => sessionStorage.setItem("mail", mail.value);
 
 
 // formulario inicial
@@ -106,83 +120,88 @@ let sub1 = document.querySelector("#enviarF1");
 
 
 
+   
+
+// SIMULADOR
+
+let aux;
 
 
-
-
-
-// función de evento que crea la segunda pantalla
-let seccionDos = function (e){
+sub1.addEventListener("click", async (e)=>{
     e.preventDefault();
-    return new Promise((resolve, reject)=>{
 
-        nombre_mail(nombre,mail)
-        .then((res=>{
-            Swal.fire('Datos ingresados correctamente')
-            Secc2();
-            resolve();
-        }))
-
-        .catch((rej)=>{
-            Swal.fire('Los datos ingresados no son válidos, intenta nuevamente')    
-        })
-
-})
+    await nombre_mail(nombre,mail)
+            .then((res=>{
+                Swal.fire('Datos ingresados correctamente')
+                aux = Secc2();
+                let val = document.querySelector("#valor");
+                let pi = document.querySelector("#pie");
+                val.onchange = () => sessionStorage.setItem("valor", val.value);
+                pi.onchange = () => sessionStorage.setItem("pie", pi.value);
     
-}
-
-
-seccionDos()
-    .then(()=>{
-        let val = document.querySelector("#valor");
-        let pi = document.querySelector("#pie");
-        val.onchange = () => sessionStorage.setItem("valor", val.value);
-        pi.onchange = () => sessionStorage.setItem("pie", pi.value);
+            }))
+            
+            .catch((rej)=>{
+                Swal.fire('Los datos ingresados no son válidos, intenta nuevamente')    
+            })
     
-    
-        let botonSimular = document.getElementById("simular");
-        let botonComparar = document.getElementById("comparar");
-    
+    Funciones_go();
     })
 
-/*
-    let seccionTres = function(e){
-        e.preventDefault();
-        seccion2.remove();
 
+    
+//Metemos la función simular y comparar
+const Funciones_go = async ()=>{
+    let botonSimular = document.getElementById("simular");
+    let botonComparar = document.getElementById("comparar");
+
+    botonSimular.addEventListener("click", async (e)=>{
+        e.preventDefault();
+        aux.remove();
+    
         let seccion3 = nuevaSec("row", contenedor);
         
         let valSim = sessionStorage.getItem("valor");
         let pieSim = sessionStorage.getItem("pie");
         let nombre = sessionStorage.getItem("nombre");
-
+    
         let simulacion = document.createElement("div");
         simulacion.innerText = nombre + ", el costo mensual de tu crédito hipotecario será de: \n"
         seccion3.appendChild(simulacion);
-
+    
         for(const obj of bancos){
             let simuBanco = document.createElement("p");
             simuBanco.innerText = `$ ${Math.round(mensualidad(valSim, pieSim, obj.tasa, obj.anos) *100)/100} durante ${obj.anos} años en el banco ${obj.nombre}`;
             simulacion.appendChild(simuBanco);
-        }
-    }
-
-    let seccionCuatro = function(e){
-        e.preventDefault();
-        seccion2.remove();
-    }
-
-    botonSimular.addEventListener("click", seccionTres);
-    botonComparar.addEventListener("click", seccionCuatro);
+    }});
     
+    
+    botonComparar.addEventListener("click", async (e)=>{
+        e.preventDefault();
+        aux.remove();
+    
+        let seccion4 = nuevaSec("row", contenedor);
+        
+        b1 = document.createElement("button");
+        b1.innerText="Por tasa"
+        b1.className ="btn btn-primary botones";
 
+        b2 = document.createElement("button");
+        b2.innerText="Por plazo"
+        b2.className ="btn btn-primary botones";
 
-*/
+        b3 = document.createElement("button");
+        b3.innerText="Por aporte"
+        b3.className ="btn btn-primary botones";
 
+        let div_botones = document.createElement("div");
+        div_botones.append(b1,b2,b3);
+        div_botones.className = "d-flex flex-row justify-content-around w-50";
+        seccion4.append(div_botones);
 
-// SIMULADOR
-sub1.addEventListener("click", seccionDos());
+        Comparaciones(div_botones, seccion4);
 
-
+    });
+}
 
 

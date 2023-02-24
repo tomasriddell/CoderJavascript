@@ -27,6 +27,7 @@ body{
     border-radius: 20px;
     padding: 3rem 0 3rem 0;
     margin-top: 3rem;
+    padding: 2rem;
 }
 
 .botones{
@@ -39,5 +40,8 @@ body{
 }
 
 
-/* Segunda pantalla con input de datos para créditos*/
-
+.tituloComparar{
+    font-size: large;
+    margin-top: 5%;
+    
+}
